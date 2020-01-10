@@ -1,3 +1,4 @@
+
 // Fig. 10.4: Employee.java
 // Employee abstract superclass.
 abstract class Employee
@@ -220,9 +221,41 @@ class BasePlusCommissionEmployee extends CommissionEmployee {
   }
 } // end class BasePlusCommissionEmployee
 
+class PieceWorker extends Employee {
+  private final double wage;
+  private final double pieces;
+  // constructor
+  public PieceWorker(String firstName, String lastName,
+    String socialSecurityNumber, double wage, int pieces) {
+    super(firstName, lastName, socialSecurityNumber);
+    if (wage < 0.0) // validate wage
+      throw new IllegalArgumentException("Wage must be >= 0.0");
+    if (pieces < 0) // validate pieces
+      throw new IllegalArgumentException("Pieces must be >= 0");
+    this.wage = wage;
+    this.pieces = pieces;
+  }
+  // return wage
+  public double getWage(){return this.wage;}
+  // return pieces
+  public double getPieces(){return this.pieces;}
+  // return String representation of PieceWorker object
+  @Override
+  public String toString() {
+    return String.format("Piece worker: %s%n%s: $%,.2f; %s: %,.2f",
+    super.toString(), "hourly wage", getWage(),
+    "Pieces worked", getPieces());
+  }
+  // calculate earnings; override abstract method earnings in Employee
+  @Override
+  public double earnings() {
+    return getWage()*getPieces();
+  }
+} // end class PieceWorker
+
 // Fig. 10.9: PayrollSystemTest.java
 // Employee hierarchy test program.
-public class PayrollSystemTest {
+public class Main {
   public static void main(String[] args) {
     // create subclass objects
     SalariedEmployee salariedEmployee =
@@ -233,21 +266,24 @@ public class PayrollSystemTest {
       new CommissionEmployee("Sue", "Jones", "333-33-3333", 10000, .06);
     BasePlusCommissionEmployee basePlusCommissionEmployee =
       new BasePlusCommissionEmployee("Bob", "Lewis", "444-44-4444", 5000, .04, 300);
+    PieceWorker pieceWorkerEmployee = new PieceWorker("A", "B", "77", 100.0, 10);
 
     System.out.println("Employees processed individually:");
     System.out.printf("%n%s%n%s: $%,.2f%n%n", salariedEmployee, "earned", salariedEmployee.earnings());
     System.out.printf("%s%n%s: $%,.2f%n%n", hourlyEmployee, "earned", hourlyEmployee.earnings());
     System.out.printf("%s%n%s: $%,.2f%n%n", commissionEmployee, "earned", commissionEmployee.earnings());
     System.out.printf("%s%n%s: $%,.2f%n%n", basePlusCommissionEmployee, "earned", basePlusCommissionEmployee.earnings());
+    System.out.printf("%s%n%s: $%,.2f%n%n", pieceWorkerEmployee, "earned", pieceWorkerEmployee.earnings());
 
     // create four-element Employee array
-    Employee[] employees = new Employee[4];
+    Employee[] employees = new Employee[5];
 
     // initialize array with Employees
     employees[0] = salariedEmployee;
     employees[1] = hourlyEmployee;
     employees[2] = commissionEmployee;
     employees[3] = basePlusCommissionEmployee;
+    employees[4] = pieceWorkerEmployee;
 
     System.out.printf("Employees processed polymorphically:%n%n");
 
@@ -256,7 +292,7 @@ public class PayrollSystemTest {
       System.out.println( currentEmployee ); // invokes toString
 
       // determine whether element is a BasePlusCommissionEmployee
-      if currentEmployee instanceof BasePlusCommissionEmployee() {
+      if (currentEmployee instanceof BasePlusCommissionEmployee) {
         // downcast Employee reference to
         // BasePlusCommissionEmployee reference
         BasePlusCommissionEmployee employee = (BasePlusCommissionEmployee) currentEmployee;
