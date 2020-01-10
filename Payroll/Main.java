@@ -1,57 +1,23 @@
+// Fig. 10.15: PayableInterfaceTest.java
+// Payable interface test program processing Invoices and
+// Employees polymorphically.
+public class PayableInterfaceTest {
+  public static void main(String[] args){
+    // create four-element Payable array
+    Payable[] payableObjects = new Payable[4];
 
+    // populate array with objects that implement Payable
+    payableObjects[0] = new Invoice("01234", "seat", 2, 375.00);
+    payableObjects[1] = new Invoice("56789", "tire", 4, 79.95);
+    payableObjects[2] = new SalariedEmployee("John", "Smith", "111-11-1111", 800.00);
+    payableObjects[3] = new SalariedEmployee("Lisa", "Barnes", "888-88-8888", 1200.00);
 
-// Fig. 10.9: PayrollSystemTest.java
-// Employee hierarchy test program.
-public class Main {
-  public static void main(String[] args) {
-    // create subclass objects
-    SalariedEmployee salariedEmployee =
-      new SalariedEmployee("John", "Smith", "111-11-1111", 800.00);
-    HourlyEmployee hourlyEmployee =
-      new HourlyEmployee("Karen", "Price", "222-22-2222", 16.75, 40);
-    CommissionEmployee commissionEmployee =
-      new CommissionEmployee("Sue", "Jones", "333-33-3333", 10000, .06);
-    BasePlusCommissionEmployee basePlusCommissionEmployee =
-      new BasePlusCommissionEmployee("Bob", "Lewis", "444-44-4444", 5000, .04, 300);
-    PieceWorker pieceWorkerEmployee = new PieceWorker("A", "B", "77", 100.0, 10);
-
-    System.out.println("Employees processed individually:");
-    System.out.printf("%n%s%n%s: $%,.2f%n%n", salariedEmployee, "earned", salariedEmployee.earnings());
-    System.out.printf("%s%n%s: $%,.2f%n%n", hourlyEmployee, "earned", hourlyEmployee.earnings());
-    System.out.printf("%s%n%s: $%,.2f%n%n", commissionEmployee, "earned", commissionEmployee.earnings());
-    System.out.printf("%s%n%s: $%,.2f%n%n", basePlusCommissionEmployee, "earned", basePlusCommissionEmployee.earnings());
-    System.out.printf("%s%n%s: $%,.2f%n%n", pieceWorkerEmployee, "earned", pieceWorkerEmployee.earnings());
-
-    // create four-element Employee array
-    Employee[] employees = new Employee[5];
-
-    // initialize array with Employees
-    employees[0] = salariedEmployee;
-    employees[1] = hourlyEmployee;
-    employees[2] = commissionEmployee;
-    employees[3] = basePlusCommissionEmployee;
-    employees[4] = pieceWorkerEmployee;
-
-    System.out.printf("Employees processed polymorphically:%n%n");
-
-    // generically process each element in array employees
-    for (Employee currentEmployee : employees) {
-      System.out.println( currentEmployee ); // invokes toString
-
-      // determine whether element is a BasePlusCommissionEmployee
-      if (currentEmployee instanceof BasePlusCommissionEmployee) {
-        // downcast Employee reference to
-        // BasePlusCommissionEmployee reference
-        BasePlusCommissionEmployee employee = (BasePlusCommissionEmployee) currentEmployee;
-        employee.setBaseSalary(1.10 * employee.getBaseSalary());
-        System.out.printf("new base salary with 10%% increase is: $%,.2f%n", employee.getBaseSalary());
-      } // end if
-      System.out.printf("earned $%,.2f%n%n", currentEmployee.earnings());
-    } // end for
-    
-    // get type name of each object in employees array
-    for (int j = 0; j < employees.length; j++)
-      System.out.printf("Employee %d is a %s%n", j,
-      employees[j].getClass().getName());
+    System.out.println("Invoices and Employees processed polymorphically:");
+    // generically process each element in array payableObjects
+    for (Payable currentPayable : payableObjects) {
+      // output currentPayable and its appropriate payment amount
+      System.out.printf("%n%s %n%s: $%,.2f%n", currentPayable.toString(),// could invoke implicitly
+      "payment due",currentPayable.getPaymentAmount());
+    }
   } // end main
-} // end class PayrollSystemTest
+} // end class PayableInterfaceTest
