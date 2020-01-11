@@ -21,16 +21,12 @@ class BasePlusCommissionEmployee extends CommissionEmployee {
     this.baseSalary = baseSalary;
   }
 
-  public void incrementBaseSalary(double increment) {
-    this.baseSalary = baseSalary*(1.0+increment);
-  }
-
   // return base salary
   public double getBaseSalary() { return baseSalary;}
 
   // calculate earnings; override method earnings in CommissionEmployee
   @Override
-  public double getPaymentAmount() { return getBaseSalary() + super.getPaymentAmount();}
+  public double earnings() { return getBaseSalary() + super.earnings();}
 
   // return String representation of BasePlusCommissionEmployee object
   @Override

@@ -25,7 +25,7 @@ class PieceWorker extends Employee {
   }
   // calculate earnings; override abstract method earnings in Employee
   @Override
-  public double getPaymentAmount() {
+  public double earnings() {
     return getWage()*getPieces();
   }
 } // end class PieceWorker
