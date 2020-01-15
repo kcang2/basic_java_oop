@@ -5,51 +5,63 @@ import java.util.regex.Matcher;
 
 
 class InfixtoPostfix{
-  StringBuffer infix, postfix;
+  StringBuilder infix, postfix;
   Stack<Character> stack;
 
   public InfixtoPostfix(String expression){
-    infix = new StringBuffer(expression);
-    postfix = new StringBuffer();
+    infix = new StringBuilder(expression);
+    postfix = new StringBuilder();
     stack = new Stack<>();
 
     stack.push('(');  // a)
     infix.append(")"); // b)
     
     while (!stack.empty()) { // c)
+      StringBuilder large = new StringBuilder();
       for (int i = 0; i < infix.length(); i++) {
         char temp = infix.charAt(i);
-        
         if (Character.isDigit(temp)) // 1)
-          postfix.append(temp);
-        else if(temp == '(') // 2)
-          stack.push(temp);
-        else if (temp == ')') { // 4)
-          while (stack.peek() != '(') {
-            char top = stack.pop();
-            postfix.append(top);
+          large.append(temp);
+        else{
+          if (large.length() > 0) {
+            int l;
+            try{
+              l = Integer.parseInt(large.toString());}
+            catch (NumberFormatException e){
+              l = 0;}
+            postfix.append((char) l);
+            large.setLength(0);
           }
-          stack.pop();
-        }
-        else if (isOperator(temp)) { // 3)
-          while (true) {
-            if (isOperator(stack.peek())) {
-              // System.out.println(stack.peek());
-              // System.out.println(temp);
-              if (precedence(temp, stack.peek())) {
-                char top = stack.pop();
-                postfix.append(top);
+          if(temp == '('){ // 2)
+            stack.push(temp);
+          }
+          else if (temp == ')') { // 4)
+            while (stack.peek() != '(') {
+              char top = stack.pop();
+              postfix.append(top);
+            }
+            stack.pop();
+          }
+          else if (isOperator(temp)) { // 3)
+            while (true) {
+              if (isOperator(stack.peek())) {
+                // System.out.println(stack.peek());
+                // System.out.println(temp);
+                if (precedence(temp, stack.peek())) {
+                  char top = stack.pop();
+                  postfix.append(top);
+                }
+                else
+                  break;
               }
               else
                 break;
             }
-            else
-              break;
+            stack.push(temp);
           }
-          stack.push(temp);
+          else
+            throw new IllegalArgumentException("Invalid Token");
         }
-        else
-          throw new IllegalArgumentException("Invalid Token");
       }
     }
   }
@@ -101,13 +113,14 @@ class PostfixEval{
     
     for (int i = 0; i < tokenArray.length; i++) {
       char temp = tokenArray[i];
-      if (Character.isDigit(temp))
-        stack.push((char) (temp - '0'));
-      else if (InfixtoPostfix.isOperator(temp)){
+      if (InfixtoPostfix.isOperator(temp)){
         int x = (int) stack.pop();
         int y = (int) stack.pop();
         stack.push(calculate(y, x, temp));
       }
+      else
+        stack.push(temp);
+      
     }
     return stack.pop();
   }
