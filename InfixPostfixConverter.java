@@ -54,7 +54,7 @@ class InfixtoPostfix{
     }
   }
 
-  public boolean isOperator(char c) {
+  public static boolean isOperator(char c) {
     // Java uses \\ to escape; [*-*] signifies range; + signifies at least one
     String operators = "([-\\+*/^%])";
     // Create a Pattern object
@@ -68,10 +68,9 @@ class InfixtoPostfix{
       return false;
   }
 
-  public boolean precedence(char op1, char op2) {
+  public static boolean precedence(char op1, char op2) {
     int[] p = new int[2];
     char[] op = {op1, op2};
-
     for (int i = 0; i< op.length; ++i) {
       if (op[i] == '+' || op[i] == '-')
         p[i] = 0;
@@ -82,12 +81,57 @@ class InfixtoPostfix{
       else
         throw new IllegalArgumentException("Unknown Operator "+op[i]);
       }
-  
     return (p[0] < p[1]) ? true : false;
   }
 
-  public String toString() {
-    return infix.toString() + "\n" + postfix.toString();
+  public String toString() {return getInfix() + "\n" + getPostfix();}
+  public String getPostfix() {return postfix.toString();}
+  public String getInfix() {return infix.toString();}
+}
+
+class PostfixEval{
+  Stack<Character> stack;
+  public PostfixEval(){stack = new Stack<>();}
+
+  public int evaluate(String expression){
+    char[] tokens = expression.toCharArray();
+    Character[] tokenArray = new Character[tokens.length];
+    for (int i=0; i< tokens.length; ++i)
+      tokenArray[i] = tokens[i];
+    
+    for (int i = 0; i < tokenArray.length; i++) {
+      char temp = tokenArray[i];
+      if (Character.isDigit(temp))
+        stack.push((char) (temp - '0'));
+      else if (InfixtoPostfix.isOperator(temp)){
+        int x = (int) stack.pop();
+        int y = (int) stack.pop();
+        stack.push(calculate(y, x, temp));
+      }
+    }
+    return stack.pop();
+  }
+
+  public char calculate(int y, int x, char op){
+    int z;
+    if (op == '+')
+      z = y + x;
+    else if(op == '-')
+      z = y - x;
+    else if(op == '*')
+      z = y * x;
+    else if(op == '/')
+      z = y / x;
+    else if(op == '%')
+      z = y % x;
+    else if(op == '^') {
+      z = 1;
+      for (int i = 0; i < x; ++i)
+        z *= y;
+    }
+    else
+      throw new IllegalArgumentException("Unknown Operator "+op);
+    return (char)z;
   }
 }
 
@@ -97,7 +141,7 @@ class Main {
     System.out.println("Please enter an expression");
     String input = in.nextLine();
     InfixtoPostfix I2P = new InfixtoPostfix(input);
-    System.out.println(I2P);
-
+    PostfixEval PE = new PostfixEval();
+    System.out.println(PE.evaluate(I2P.getPostfix()));
   }
 }
