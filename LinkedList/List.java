@@ -40,6 +40,42 @@ public class List<T> {
       firstNode = new ListNode<T>(insertItem, firstNode);
   }
 
+  public void insertAt(T insertItem, int index){
+    if (index == 0){
+      insertAtFront(insertItem);
+      return;
+    }
+    ListNode<T> newNode = new ListNode(insertItem);
+    ListNode<T> prev = firstNode;
+    for (int i = 0; i < index-1; i++){
+      if (prev.nextNode == null){
+        System.out.println("Unexpected end of list. Check your index");
+        return;
+      }
+      prev = prev.nextNode;
+    }
+    ListNode<T> temp = prev.nextNode;
+    prev.nextNode = newNode;
+    newNode.nextNode = temp;
+  }
+
+  public T removeAt(int index) throws EmptyListException{   
+    ListNode<T> prev = firstNode;
+    for (int i = 0; i < index-1; i++){
+      if (prev.nextNode == null)
+        throw new IllegalArgumentException("Unexpected end of list. Check your index");
+      prev = prev.nextNode;
+    }
+    if (prev.nextNode.nextNode == null)
+      return removeFromBack();
+    else{
+      ListNode<T> temp = prev.nextNode;
+      prev.nextNode = prev.nextNode.nextNode;
+      temp.nextNode = null;
+      return temp.data;
+    }
+  }
+
   // insert item at end of List
   public void insertAtBack(T insertItem){
     if (isEmpty()) // firstNode and lastNode refer to same object
