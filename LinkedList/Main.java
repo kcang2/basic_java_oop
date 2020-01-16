@@ -9,5 +9,11 @@ public class Main{
     l.print();
     l.printListBackward();
     System.out.println(l.search(3).getData());
+
+    l.insertAt(47, 1);
+    l.print();
+    Integer ln = l.removeAt(1);
+    l.print();
+    System.out.println(ln);
   }
 }
