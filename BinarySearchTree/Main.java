@@ -32,5 +32,7 @@ public class Main {
 
     TreeNode<Integer> n = tree.contains(find);
     System.out.println(n==null);
+
+    tree.levelorderTraversal();
   }
 } // end class TreeTest

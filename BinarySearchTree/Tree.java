@@ -1,3 +1,5 @@
+import java.util.*;
+
 // class TreeNode definition
 class TreeNode<T extends Comparable<T>>{
   // package access members
@@ -181,5 +183,22 @@ public class Tree<T extends Comparable<T>> {
     postorderHelper(node.leftNode); // traverse left subtree
     postorderHelper(node.rightNode); // traverse right subtree
     print(node);
+  }
+  // begin levelorder traversal
+  public void levelorderTraversal(){levelorderHelper(root);}
+  // recursive method to perform postorder traversal
+  private void levelorderHelper(TreeNode<T> node){
+    if (node == null)
+      return;
+    LinkedList<TreeNode<T>> q = new LinkedList<>();
+    q.addFirst(node);
+    while(q.size() > 0){
+      node = q.pollLast();
+      print(node);
+      if (node.leftNode != null)
+        q.addFirst(node.leftNode);
+      if (node.rightNode != null)
+        q.addFirst(node.rightNode);
+    }
   }
 } // end class Tree
